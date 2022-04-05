@@ -41,3 +41,10 @@ The following API Endpoint are the slowest
 /api/v1/get/recipient_map/all:        0.032007s
 /api/v1/get/tls-policy-map/all:       0.032511s
 ```
+
+### context
+
+As far as i know the following files are mainly involved for the backend
+
+* /data/web/json_api.php
+* /data/web/inc/functions.mailbox.inc.php
