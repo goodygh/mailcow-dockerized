@@ -14,7 +14,8 @@ docker-compose up -d
 
 !! THIS WILL OVERWRITE YOUR MAILCOW DATABASE !!
 
-The demo.sql contains about 1000 Demo Domains, Mailboxes and about 3000 Aliases.
+The demo.sql contains about 1000 Demo Domains, Mailboxes and about 3000 Aliases.  
+Wait until the backend is up and running.
 
 ```shell
 source .env
