@@ -1,37 +1,42 @@
-# mailcow: dockerized - 🐮 + 🐋 = 💕
+# steps to reproduce
 
-## We stand with 🇺🇦
+## Setup local dev environment
 
-[![master build status](https://img.shields.io/drone/build/mailcow/mailcow-dockerized/master?label=master%20build&server=https%3A%2F%2Fdrone.mailcow.email)](https://drone.mailcow.email/mailcow/mailcow-dockerized) [![staging build status](https://img.shields.io/drone/build/mailcow/mailcow-dockerized/staging?label=staging%20build&server=https%3A%2F%2Fdrone.mailcow.email)](https://drone.mailcow.email/mailcow/mailcow-dockerized) [![Translation status](https://translate.mailcow.email/widgets/mailcow-dockerized/-/translation/svg-badge.svg)](https://translate.mailcow.email/engage/mailcow-dockerized/)
-[![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/mailcow_email.svg?style=social&label=Follow%20%40mailcow_email)](https://twitter.com/mailcow_email)
+```shell
+git clone https://github.com/goodygh/mailcow-dockerized.git
+cd mailcow-dockerized
+git checkout slow_api
+./generate_config.sh
+docker-compose up -d
+```
 
-## Want to support mailcow?
+## import sample database
 
-Please [consider a support contract with Servercow](https://www.servercow.de/mailcow?lang=en#support) to support further development. _We_ support _you_ while _you_ support _us_. :)
+!! THIS WILL OVERWRITE YOUR MAILCOW DATABASE !!
 
-You can also [get a SAL](https://www.servercow.de/mailcow?lang=en#sal) which is a one-time payment with no liabilities or returning fees.
+The demo.sql contains about 1000 Demo Domains, Mailboxes and about 3000 Aliases.
 
-Or just spread the word: moo.
+```shell
+source .env
+cat demo.sql | docker exec -i mailcowdockerized_mysql-mailcow_1 mysql -u mailcow -p${DBPASS} ${DBNAME}
+```
 
-## Info, documentation and support
+* login as admin with default login (admin:moohoo)
+* call /mailbox
 
-Please see [the official documentation](https://mailcow.github.io/mailcow-dockerized-docs/) for installation and support instructions. 🐄
+The following API Endpoint are the slowest
 
-🐛 **If you found a critical security issue, please mail us to [info at servercow.de](mailto:info@servercow.de).**
-
-## Cowmunity
-
-[mailcow community](https://community.mailcow.email)
-
-[Telegram mailcow channel](https://telegram.me/mailcow)
-
-[Telegram mailcow Off-Topic channel](https://t.me/mailcowOfftopic)
-
-[Official Twitter Account](https://twitter.com/mailcow_email)
-
-Telegram desktop clients are available for [multiple platforms](https://desktop.telegram.org). You can search the groups history for keywords.
-
-## Misc
-
-**Important**: mailcow makes use of various open-source software. Please assure you agree with their license before using mailcow.
-Any part of mailcow itself is released under **GNU General Public License, Version 3**.
+```
+/api/v1/get/domain/domain.local:      0.149639s
+/api/v1/get/bcc-destination-options:  11.417033s
+/api/v1/get/domain/all:               20.184981s
+/api/v1/get/mailbox/reduced:          4.126616s
+/api/v1/get/resource/all:             1.284858s
+/api/v1/get/alias/all:                5.325483s
+/api/v1/get/alias-domain/all:         0.054374s
+/api/v1/get/syncjobs/all/no_log:      2.423871s
+/api/v1/get/filters/all:              2.223530s
+/api/v1/get/bcc/all:                  0.036706s
+/api/v1/get/recipient_map/all:        0.032007s
+/api/v1/get/tls-policy-map/all:       0.032511s
+```
